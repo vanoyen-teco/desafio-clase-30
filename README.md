@@ -11,7 +11,7 @@ Configurar opcionalmente un puerto:
 app.js --port=8080
 ```
 
-Configuración de ejemplo servidor Nginx: Ver config. (https://github.com/vanoyen-teco/nginx/nginx_example/nginx.conf)
+Configuración de ejemplo servidor Nginx: Ver config. (https://github.com/vanoyen-teco/desafio-clase-30/nginx_example/nginx.conf)
 
 Comandos para ejecución de pruebas: 
 
