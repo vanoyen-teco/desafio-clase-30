@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt');
 
 mongoose.connect(process.env.DB_CNX,{
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 });
 
 const UserSchema = mongoose.Schema({

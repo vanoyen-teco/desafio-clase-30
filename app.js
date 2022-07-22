@@ -4,6 +4,8 @@ const { hideBin } = require('yargs/helpers')
 const argv = yargs(hideBin(process.argv)).argv;
 
 const express = require('express');
+const cluster = require("cluster");
+const totalCPUs = require("os").cpus().length;
 const session =  require('express-session');
 const path = require('path');
 
@@ -16,11 +18,11 @@ const mainRouter = require("./routes/mainRouter");
 const mongostoreConfig = require('./config/mongoStoreConfig');
 
 const {engine} = handlebars;
+
 const app = express();
-
-
+const server = require('http').Server(app);
 const PORT = (argv.port !== undefined)?argv.port:8080;
-app.listen(PORT, () => console.log("Server Up"));
+const MODE = argv.mode || 'fork';
 
 // Handlebars settings
 app.engine(
@@ -45,3 +47,38 @@ app.use(passport.session());
 
 app.use("/api", apiRouter);
 app.use("/", mainRouter);
+
+//console.log(cluster.isMaster);
+
+if(MODE !== 'fork'){
+    if (cluster.isMaster) {
+        //console.log(totalCPUs);
+        for (let i = 0; i < totalCPUs; i++) {
+            try {
+                cluster.fork();
+            } catch (error) {
+                console.log(error);
+            }        
+        }
+    
+        cluster.on("exit", (worker, code, signal) => {
+            //console.log(worker.process.pid);
+            try {
+                cluster.fork();
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    }else{
+        server.listen(PORT, () => {
+            console.log("Server Up");
+            console.log(`Escuchando puerto: ${server.address().port}`);
+        });
+
+    }//end cluster isMain
+}else{
+    server.listen(PORT, () => {
+        console.log("Server Up");
+        console.log(`Escuchando puerto: ${server.address().port}`);
+    });
+}

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const totalCPUs = require("os").cpus().length;
 
 const passport = require('passport');
 
@@ -18,16 +19,16 @@ router.route('/login')
         res.redirect('/dashboard');
     });
 
-    router.route('/login/fail')
-        .get((req, res) => {
-            res.render("login", {
-                pageTitle: "LogIn",
-                signUp: true,
-                error: true
-            });
+router.route('/login/fail')
+    .get((req, res) => {
+        res.render("login", {
+            pageTitle: "LogIn",
+            signUp: true,
+            error: true
         });
+    });
 
-    router.route('/signup')
+router.route('/signup')
     .get((req, res) => {
         res.render("signup", {
             pageTitle: "Sign Up",
@@ -38,14 +39,14 @@ router.route('/login')
         res.redirect('/dashboard');
     });
 
-    router.route('/signup/fail')
-        .get((req, res) => {
-            res.render("signup", {
-                pageTitle: "Sign Up",
-                signUp: false,
-                fail: true
-            });
+router.route('/signup/fail')
+    .get((req, res) => {
+        res.render("signup", {
+            pageTitle: "Sign Up",
+            signUp: false,
+            fail: true
         });
+    });
 
 router.route('/dashboard')
     .get((req, res) => {
@@ -91,7 +92,8 @@ router.route('/info')
                 "proceso": process.title,
                 "os": process.platform,
                 "memory": process.memoryUsage().rss,
-                "argumentos": argumentos
+                "argumentos": argumentos,
+                "cpus": totalCPUs
             }
         });
     });
